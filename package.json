@@ -1,0 +1,21 @@
+{
+  "name": "tutorea_backend",
+  "version": "1.0.0",
+  "description": "backend of tutorea",
+  "main": "index.js",
+  "repository": "https://github.com/greatooau/Tutorea_backend",
+  "author": "greatooau",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-async-handler": "^1.2.0"
+  },
+  "scripts": {
+    "server":"nodemon server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
