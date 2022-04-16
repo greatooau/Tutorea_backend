@@ -9,5 +9,6 @@ app.use(express.urlencoded({extended: false}));
 
 app.use('/api/tutors', require('./src/routes/tutorRoutes'));
 
+app.use('/api/users', require('./src/routes/userRoutes'));
 
 app.listen(port, () => console.log(`Listening on port: ${port}`))

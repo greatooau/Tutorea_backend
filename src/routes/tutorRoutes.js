@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getTutors, registerUser, getTutor } = require('../controllers/tutorController');
+const { getTutors, registerTutor, getTutor } = require('../controllers/tutorController');
 
-router.route('/').get(getTutors).post(registerUser);
+router.route('/').get(getTutors).post(registerTutor);
 
 router.route('/:id').get(getTutor).delete();
 
