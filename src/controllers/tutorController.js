@@ -30,7 +30,7 @@ const getTutors = (req, res) => {
  * @route POST api/tutors
  * @access Private
  */
-const registerTutor = (req, res) => {
+const registerUser = (req, res) => {
     res.json({
         message:'prueba POST'
     });
@@ -40,5 +40,5 @@ const registerTutor = (req, res) => {
 module.exports = {
     getTutors,
     getTutor,
-    registerTutor
+    registerUser
 }

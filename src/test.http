@@ -1,0 +1,5 @@
+GET http://localhost:5000/api/tutors/
+###
+POST http://localhost:5000/api/tutors/
+###
+GET http://localhost:5000/api/tutors/1
