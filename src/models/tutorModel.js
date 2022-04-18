@@ -6,9 +6,16 @@ const tutorSchema = mongoose.Schema(
             required: true,
             ref: 'User'
         },
-        text: {
+        specialization: {
             type: String,
             required: [true, 'Please add a text value']
+        },
+        stars: {
+            type: Number,
+            required: [true, 'Please add a text value']
+        },
+        studies: {
+            type: mongoose.Schema.Types.Objec
         }
     },
     {

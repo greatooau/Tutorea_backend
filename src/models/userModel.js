@@ -25,6 +25,18 @@ const userSchema = mongoose.Schema(
             type: String,
             required: [true, 'Please add a text value']
         },
+        sex: {
+            type: String,
+            required: [true, 'Please add a text value']
+        },
+        email: {
+            type: String,
+            required: [true, 'Please add a text value']
+        },
+        phone: {
+            type: String,
+            required: [true, 'Please add a text value']
+        },
     },
     {
         timestamps: true
