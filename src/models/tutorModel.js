@@ -12,15 +12,52 @@ const tutorSchema = mongoose.Schema(
         },
         stars: {
             type: Number,
-            required: [true, 'Please add a text value']
+            required: true
         },
-        studies: {
-            type: mongoose.Schema.Types.Objec
-        }
+        studies: [
+            {
+                study: {
+                    type: String,
+                    required: [true, 'Please add a text value'],
+                },
+                school: {
+                    type: String,
+                    required: [true, 'Please add a text value'],
+                },
+                img: {
+                    type: String,
+                    required: [true, 'Please add a text value'],
+                },
+            }
+        ],
+        insigths: [
+            {
+                name: {
+                    type:String,
+                    required:true
+                }
+            }
+        ],
+        fee: {
+            type:Number,
+            required:true
+        },
+        contacts: [
+            {
+                name:{
+                    type:String,
+                    required:true
+                },
+                contact:{
+                    type:String,
+                    required:true
+                }
+            }
+        ]
     },
     {
         timestamps: true
     }
 );
 
-module.exports = mongoose.model('Goal', goalSchema);
+module.exports = mongoose.model('Tutor', tutorSchema);
