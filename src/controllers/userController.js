@@ -1,17 +1,71 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
+const User = require('../models/userModel');
+const Tutor = require('../models/tutorModel');
 
 /**
- * @description This method is used to get all the users from Database.
- * @route GET api/users
- * @access Private
+ * @description This method is used to register a new user.
+ * @route       POST api/users
+ * @access      Public
+ * This works
  */
+const registerUser = asyncHandler(async (req, res) => {
+    const {
+        username,
+        password,
+        name,
+        lastname,
+        born_date,
+        profile_picture,
+        sex,
+        email,
+        phone
+    } = req.body;
 
-const deleteUser = (req, res) => {
-    res.json({
-        message:'prueba DELETE'
+    if(!name || !email || !password ||
+        !username || !lastname || !born_date || 
+        !profile_picture || !sex || !phone) {
+        res.status(400);
+        throw new Error('Please add all fields');
+    }
+
+    const userExists = await User.findOne({email});
+
+    if(userExists) {
+        res.status(400);
+        throw new Error('User already exists');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.create({
+        username,
+        password: hashedPassword,
+        name,
+        lastname,
+        born_date,
+        profile_picture,
+        sex,
+        email,
+        phone
     });
+
+    if(user) {
+        res.status(201).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            token: generateToken(user._id)
+        });
+    } else {
+        res.status(400);
+        throw new Error('Invalid user data');
+    }
+    
     res.status(200);
-};
+});
 
 /**
  * @description This method is used to get just one user by ID.
@@ -19,26 +73,89 @@ const deleteUser = (req, res) => {
  * @access Private
  */
 
- const getUser = (req, res) => {
-    res.json({
-        message:'prueba GET, un user'
+const getMe = asyncHandler( async (req, res) => {
+    const {_id, name, email} = await User.findById(req.user.id);
+    res.status(200).json({
+        id: _id,
+        name,
+        email
     });
-    res.status(200);
-};
-/**
- * @description This method is used to register a new user.
- * @route POST api/users
- * @access Private
+});
+
+/** 
+ * @desc    Authenticate a user
+ * @route   POST /api/users/login
+ * @access  Public
  */
-const registerUser = (req, res) => {
-    res.json({
-        message:'prueba POST'
-    });
+
+const loginUser = asyncHandler( async (req, res) => {
+    const { email, password } = req.body;
+
+    //Check for user email
+    const user = await User.findOne({email});
+
+    if(user && (await bcrypt.compare(password, user.password))) {
+        res.json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            token: generateToken(user._id)
+        });
+    } else {
+        res.status(400);
+        throw new Error('Invalid credentials');
+    }
+});
+
+/**
+* @desc    Update user
+* @route   PUT /api/users/:id
+* @access  Private
+*/
+//WORKS
+const editUser = asyncHandler( async(req, res) => {
+    const user = await User.findById(req.params.id);
+
+    if(!user) {
+        res.status(400);
+        throw new Error('User not found');
+    }
+
+    const updatedGoal = await User.findByIdAndUpdate(req.params.id, req.body, { new: true});
+
+    res.status(200).json(updatedGoal);
+});
+/**
+* @desc    Add tutor to user's "myTutors" Field
+* @route   POST /api/users/tutors
+* @access  Private
+*/
+const addToMyTutors = asyncHandler(async(req, res) => {
+    const tutor = await Tutor.findById(req.body.tutorId);
+
+    if(!tutor) {
+        res.status(400);
+        throw new Error('Tutor not found');
+    }
+    const user = await User.findById(req.user.id);
+
+    const userUpdated = {
+        ...user,
+        myTutors: user.myTutors.push(req.body.tutorId)
+    };
+
+    await User.updateOne({_id:req.user.id}, userUpdated);
     res.status(200);
-}
+});
+
+const generateToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn:'30d'});
+};
 
 module.exports = {
-    deleteUser,
-    getUser,
-    registerUser
+    loginUser,
+    registerUser,
+    editUser,
+    getMe,
+    addToMyTutors
 }

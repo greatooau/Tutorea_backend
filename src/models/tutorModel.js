@@ -8,56 +8,20 @@ const tutorSchema = mongoose.Schema(
         },
         specialization: {
             type: String,
-            required: [true, 'Please add a text value']
+            required: true
         },
         stars: {
             type: Number,
             required: true
         },
-        studies: [
-            {
-                study: {
-                    type: String,
-                    required: [true, 'Please add a text value'],
-                },
-                school: {
-                    type: String,
-                    required: [true, 'Please add a text value'],
-                },
-                img: {
-                    type: String,
-                    required: [true, 'Please add a text value'],
-                },
-            }
-        ],
-        insigths: [
-            {
-                name: {
-                    type:String,
-                    required:true
-                }
-            }
-        ],
         fee: {
             type:Number,
             required:true
         },
-        contacts: [
-            {
-                name:{
-                    type:String,
-                    required:true
-                },
-                contact:{
-                    type:String,
-                    required:true
-                }
-            }
-        ]
     },
     {
         timestamps: true
     }
 );
 
-module.exports = mongoose.model('Tutor', tutorSchema);
+module.exports = mongoose.model('Tutor', tutorSchema, 'tutors');
