@@ -2,12 +2,12 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
-
+const Tutor = require('../models/tutorModel');
 
 /**
  * @description This method is used to register a new user.
- * @route POST api/users
- * @access Private
+ * @route       POST api/users
+ * @access      Public
  * This works
  */
 const registerUser = asyncHandler(async (req, res) => {
@@ -85,7 +85,7 @@ const getMe = asyncHandler( async (req, res) => {
 /** 
  * @desc    Authenticate a user
  * @route   POST /api/users/login
- * @access Private
+ * @access  Public
  */
 
 const loginUser = asyncHandler( async (req, res) => {
@@ -125,6 +125,28 @@ const editUser = asyncHandler( async(req, res) => {
 
     res.status(200).json(updatedGoal);
 });
+/**
+* @desc    Add tutor to user's "myTutors" Field
+* @route   POST /api/users/tutors
+* @access  Private
+*/
+const addToMyTutors = asyncHandler(async(req, res) => {
+    const tutor = await Tutor.findById(req.body.tutorId);
+
+    if(!tutor) {
+        res.status(400);
+        throw new Error('Tutor not found');
+    }
+    const user = await User.findById(req.user.id);
+
+    const userUpdated = {
+        ...user,
+        myTutors: user.myTutors.push(req.body.tutorId)
+    };
+
+    await User.updateOne({_id:req.user.id}, userUpdated);
+    res.status(200);
+});
 
 const generateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn:'30d'});
@@ -134,5 +156,6 @@ module.exports = {
     loginUser,
     registerUser,
     editUser,
-    getMe
+    getMe,
+    addToMyTutors
 }
