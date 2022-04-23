@@ -1,4 +1,8 @@
 const asyncHandler = require('express-async-handler');
+const Tutor = require('../models/tutorModel');
+const Insights = require('../models/insightsModel');
+const Contacts = require('../models/contactsModel');
+const Studies = require('../models/studiesModel');
 
 /**
  * @description This method is used to get all the tutors from Database.
@@ -6,12 +10,14 @@ const asyncHandler = require('express-async-handler');
  * @access Private
  */
 
-const getTutors = (req, res) => {
-    res.json({
-        message:'prueba GET'
-    });
+const getTutors = asyncHandler( async(req, res) => {
+    const tutors = await Tutor.find()
+/*     const insights = await Insights.find();
+    const studies = await Studies.find();
+    const contacts = await Contacts.find(); */
+    res.json({tutors:tutors, /* insights:insights, studies:studies, contacts:contacts */});
     res.status(200);
-};
+});
 
 /**
  * @description This method is used to get just one Tutor by ID.
@@ -19,7 +25,7 @@ const getTutors = (req, res) => {
  * @access Private
  */
 
- const getTutor = (req, res) => {
+const getTutor = (req, res) => {
     res.json({
         message:'prueba GET, un tutor'
     });
