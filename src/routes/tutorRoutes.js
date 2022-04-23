@@ -4,6 +4,6 @@ const { getTutors, registerTutor, getTutor } = require('../controllers/tutorCont
 
 router.route('/').get(getTutors).post(registerTutor);
 
-router.route('/:id').get(getTutor).delete();
+router.route('/:id').get(getTutor);
 
 module.exports = router;
