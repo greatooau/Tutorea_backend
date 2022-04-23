@@ -40,6 +40,9 @@ const userSchema = mongoose.Schema(
             type: String,
             required: [true, 'Please add a phone value']
         },
+        myTutors: [
+            { type:mongoose.Schema.Types.ObjectId, required: true, ref:'Tutor' }
+        ]
     },
     {
         timestamps: true
