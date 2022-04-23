@@ -17,24 +17,18 @@ const tutorSchema = mongoose.Schema(
         studies: [
             {
                 study: {
-                    type: String,
-                    required: [true, 'Please add a text value'],
-                },
-                school: {
-                    type: String,
-                    required: [true, 'Please add a text value'],
-                },
-                img: {
-                    type: String,
-                    required: [true, 'Please add a text value'],
-                },
+                    type: mongoose.Schema.Types.ObjectId,
+                    required: true,
+                    ref:'Studies'
+                }
             }
         ],
-        insigths: [
+        insights: [
             {
-                name: {
-                    type:String,
-                    required:true
+                insight: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    required: true,
+                    ref:'Insights'
                 }
             }
         ],
@@ -44,13 +38,10 @@ const tutorSchema = mongoose.Schema(
         },
         contacts: [
             {
-                name:{
-                    type:String,
-                    required:true
-                },
                 contact:{
-                    type:String,
-                    required:true
+                    type: mongoose.Schema.Types.ObjectId,
+                    required: true,
+                    ref:'Contacts'
                 }
             }
         ]
@@ -60,4 +51,4 @@ const tutorSchema = mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model('Tutor', tutorSchema);
+module.exports = mongoose.model('Tutor', tutorSchema, 'tutors');
