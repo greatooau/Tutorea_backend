@@ -8,43 +8,16 @@ const tutorSchema = mongoose.Schema(
         },
         specialization: {
             type: String,
-            required: [true, 'Please add a text value']
+            required: true
         },
         stars: {
             type: Number,
             required: true
         },
-        studies: [
-            {
-                study: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    required: true,
-                    ref:'Studies'
-                }
-            }
-        ],
-        insights: [
-            {
-                insight: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    required: true,
-                    ref:'Insights'
-                }
-            }
-        ],
         fee: {
             type:Number,
             required:true
         },
-        contacts: [
-            {
-                contact:{
-                    type: mongoose.Schema.Types.ObjectId,
-                    required: true,
-                    ref:'Contacts'
-                }
-            }
-        ]
     },
     {
         timestamps: true
