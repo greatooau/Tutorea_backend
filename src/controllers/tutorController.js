@@ -17,7 +17,10 @@ const getTutors = asyncHandler( async(req, res) => {
     const contacts = await Contacts.find(); */
     res.json({tutors:tutors, /* insights:insights, studies:studies, contacts:contacts */});
     res.status(200);
+    res.end()
 });
+
+
 
 /**
  * @description This method is used to get just one Tutor by ID.
@@ -36,6 +39,7 @@ const getTutor = asyncHandler( async(req, res) => {
         const contacts = await Contacts.find({tutor:req.params.id});
         res.status(200).json({tutor:tutor, insights: insights, studies: studies, contacts: contacts});
     }
+    res.end()
 });
 
 /**
@@ -49,6 +53,7 @@ const registerTutor = (req, res) => {
         message:'prueba POST'
     });
     res.status(200);
+    res.end()
 }
 
 module.exports = {

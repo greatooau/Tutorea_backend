@@ -1,10 +1,21 @@
 const mongoose = require('mongoose');
 const tutorSchema = mongoose.Schema(
     {
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: 'User'
+        name:{
+            type: String,
+            required:true
+        },
+        lastname:{
+            type: String,
+            required:true
+        },
+        lastname:{
+            type: String,
+            required:true
+        },
+        profile_picture:{
+            type: String,
+            required: true
         },
         specialization: {
             type: String,
