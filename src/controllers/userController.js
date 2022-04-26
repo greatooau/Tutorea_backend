@@ -76,7 +76,7 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 /**
- * @description This method is used to get just one user by ID.
+ * @description This method the info of the user who's logged in.
  * @route GET api/users/:id
  * @access Private
  */
@@ -104,6 +104,7 @@ const getMe = asyncHandler(async (req, res) => {
     sex,
     born_date,
     phone,
+    myTutors
   });
   res.end()
 });
@@ -116,10 +117,10 @@ const getMe = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
-
+  console.log(username)
   //Check for user username
-  const user = await User.findOne({ username });
-
+  const user = await User.findOne({ username:username });
+  console.log(user)
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
       _id: user.id,

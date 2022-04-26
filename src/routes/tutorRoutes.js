@@ -6,6 +6,7 @@ const { protect } = require('../middleware/authMiddleware')
 router.route('/').get(protect, getTutors).post(registerTutor);
 
 router.route('/:id').get(protect, getTutor);
+
 router.route('/category/:category').get(protect, getTutorsByCategory)
 
 
