@@ -17,6 +17,10 @@ const tutorSchema = mongoose.Schema(
             type: String,
             required: true
         },
+        category: {
+            type: String,
+            required: true
+        },
         specialization: {
             type: String,
             required: true
@@ -29,6 +33,7 @@ const tutorSchema = mongoose.Schema(
             type:Number,
             required:true
         },
+
     },
     {
         timestamps: true
