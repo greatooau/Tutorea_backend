@@ -169,11 +169,13 @@ const addToMyTutors = asyncHandler(async (req, res) => {
   }
 
   await User.updateOne({ _id:req.user.id }, {$push:{ myTutors: req.body.tutorId}})
-  console.log('chilillo')
   res.status(200)
   res.end()
 });
 
+    /*     const insights = await Insights.find();
+        const studies = await Studies.find();
+        const contacts = await Contacts.find(); */
 /**
  * @description This method is used to get all the tutors from Database.
  * @route GET api/tutors
@@ -181,13 +183,8 @@ const addToMyTutors = asyncHandler(async (req, res) => {
  */
 
  const getMyTutors = asyncHandler( async(req, res) => {
-    const user = await User.findById(req.user.id)
-    
-    const myTutors = user.myTutors;
-    /*     const insights = await Insights.find();
-        const studies = await Studies.find();
-        const contacts = await Contacts.find(); */
-        res.json({ /* insights:insights, studies:studies, contacts:contacts */});
+    const myTutors = await User.findById(req.user.id).populate('myTutors')
+        res.json(myTutors);
         res.status(200);
         res.end()
     });
