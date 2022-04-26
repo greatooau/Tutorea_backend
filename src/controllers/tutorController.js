@@ -20,6 +20,21 @@ const getTutors = asyncHandler( async(req, res) => {
     res.end()
 });
 
+/**
+ * @description This method is used to get all the tutors from Database by category.
+ * @route GET api/tutors
+ * @access Private
+ */
+
+const getTutorsByCategory = asyncHandler( async(req, res) => {
+    const tutors = await Tutor.find({category:req.params.category})
+/*     const insights = await Insights.find();
+    const studies = await Studies.find();
+    const contacts = await Contacts.find(); */
+    res.json({tutors:tutors, /* insights:insights, studies:studies, contacts:contacts */});
+    res.status(200);
+    res.end()
+});
 
 
 /**
@@ -56,8 +71,10 @@ const registerTutor = (req, res) => {
     res.end()
 }
 
+
 module.exports = {
     getTutors,
     getTutor,
-    registerTutor
+    registerTutor,
+    getTutorsByCategory
 }
