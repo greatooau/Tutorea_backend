@@ -43,10 +43,6 @@ const userSchema = mongoose.Schema(
         myTutors: [
             { type:mongoose.Schema.Types.ObjectId, required: true, ref:'Tutor' }
         ],
-        payData:{
-            type: mongoose.Types.ObjectId,
-            required: true
-        }
     },
     {
         timestamps: true

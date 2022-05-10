@@ -15,6 +15,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(cors());
 app.use('/api/tutors', require('./src/routes/tutorRoutes'));
 app.use('/api/users', require('./src/routes/userRoutes'));
-
+app.use('/api/reports', require('./src/routes/reportRoutes'))
+app.use('/api/transactions', require('./src/routes/transactionRoutes'))
 app.use(errorHandler);
 app.listen(port, () => console.log(`Listening on port: ${port}`))

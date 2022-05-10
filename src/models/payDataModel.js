@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const payDataSchema = mongoose.Schema(
     {
+        user:{
+            type:String,
+            required:true,
+            ref:'User'
+        },
         cardNumber: {
             type: String,
             required:true
