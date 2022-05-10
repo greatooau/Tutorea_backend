@@ -23,11 +23,16 @@ const protect = asyncHandler( async (req, res, next) => {
             throw new Error('Not authorized');
         }
     }
-    
+    if (token === undefined) {
+        res.status(401);
+        throw new Error('tu token no está definido')
+    }
     if(!token) {
         res.status(401);
         throw new Error('Not authorized, no token');
     }
+
+
 });
 
 module.exports = { protect };

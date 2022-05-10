@@ -42,7 +42,7 @@ const userSchema = mongoose.Schema(
         },
         myTutors: [
             { type:mongoose.Schema.Types.ObjectId, required: true, ref:'Tutor' }
-        ]
+        ],
     },
     {
         timestamps: true
