@@ -15,9 +15,27 @@ const getTutors = asyncHandler( async(req, res) => {
 /*     const insights = await Insights.find();
     const studies = await Studies.find();
     const contacts = await Contacts.find(); */
-    res.json({tutors:tutors, /* insights:insights, studies:studies, contacts:contacts */});
+    res.json(tutors /* insights:insights, studies:studies, contacts:contacts */);
     res.status(200);
+    res.end()
 });
+
+/**
+ * @description This method is used to get all the tutors from Database by category.
+ * @route GET api/tutors
+ * @access Private
+ */
+
+const getTutorsByCategory = asyncHandler( async(req, res) => {
+    const tutors = await Tutor.find({category:req.params.category})
+/*     const insights = await Insights.find();
+    const studies = await Studies.find();
+    const contacts = await Contacts.find(); */
+    res.json(tutors);
+    res.status(200);
+    res.end()
+});
+
 
 /**
  * @description This method is used to get just one Tutor by ID.
@@ -30,29 +48,19 @@ const getTutor = asyncHandler( async(req, res) => {
     if(!tutor) {
         res.status(400);
         throw new Error("Tutor doesn't exist");
-    } else {
+    } else {/* 
         const insights = await Insights.find({tutor:req.params.id});
         const studies = await Studies.find({tutor:req.params.id});
-        const contacts = await Contacts.find({tutor:req.params.id});
-        res.status(200).json({tutor:tutor, insights: insights, studies: studies, contacts: contacts});
+        const contacts = await Contacts.find({tutor:req.params.id}); */
+        res.status(200).json(tutor);
     }
+    res.end()
 });
 
-/**
- * @description This method is used to register a new tutor.
- * @route POST api/tutors
- * @access Private
- */
-//Este método será implementado después
-const registerTutor = (req, res) => {
-    res.json({
-        message:'prueba POST'
-    });
-    res.status(200);
-}
+
 
 module.exports = {
     getTutors,
     getTutor,
-    registerTutor
+    getTutorsByCategory
 }
