@@ -7,7 +7,6 @@ const Reports = require('../models/reportModel');
 
 router.route('/')
     .post(protect, asyncHandler(async (req, res) => {
-        console.log('testeando ruta')
         const user = req.user.id
         const report = req.body.report
         const tutor = req.body.tutorId
