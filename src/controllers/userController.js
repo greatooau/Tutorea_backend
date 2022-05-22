@@ -158,18 +158,18 @@ const loginUser = asyncHandler(async (req, res) => {
  */
 //WORKS
 const editUser = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id);
+	const user = await User.findById(req.params.id);
 
-    if (!user) {
-      res.status(400);
-      throw new Error("User not found");
-    }
+	if (!user) {
+		res.status(400);
+		throw new Error("User not found");
+	}
 
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body);
+	const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body);
 
-    res.status(200).json(updatedUser);
-    
-    res.end();
+	res.status(200).json(updatedUser);
+	
+	res.end();
 });
 /**
  * @desc    Add tutor to user's "myTutors" Field
@@ -251,14 +251,24 @@ const changePassword = asyncHandler( async(req, res) => {
 
 const editPayInfo = asyncHandler(
   async (req, res) => {
-    await PayData.create({
-      user:req.user.id,
-      ...req.body
-    })
-    res.status(200)
-    res.json({message:`La información de pago del usuario ${req.user.id} ha sido actualizada.`})
-    res.end()
-  }
+		const update = req.body.update
+		console.log(update)
+		if (update) {
+		await PayData.findOneAndUpdate(
+			{ user: req.user.id },
+			{...req.body}
+		)
+		} else {
+		await PayData.create({
+			user:req.user.id,
+			...req.body
+		})
+		}
+		
+		res.status(200)
+		res.json({message:`La información de pago del usuario ${req.user.id} ha sido actualizada.`})
+		res.end()
+	}
 )
 
 module.exports = {
