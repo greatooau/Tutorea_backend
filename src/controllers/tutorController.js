@@ -4,6 +4,33 @@ const Insights = require('../models/insightsModel');
 const Contacts = require('../models/contactsModel');
 const Studies = require('../models/studiesModel');
 
+
+const loginTutor = asyncHandler ( 
+    async (req, res) => {
+        //Recibe usuario y contraseña del tutor
+        const { username, password } = req.body
+        //Busca al tutor en la DB
+        const tutor = await Tutor.findOne({ username: username });
+        //Si el tutor existe, y su contraseña es la correcta, entonces...
+        if (tutor && (await bcrypt.compare(password, tutor.password))) {
+            const tutorData = {
+                _id: tutor._id,
+                name: tutor.name,
+                lastname: tutor.lastname,
+                sex: user.sex,
+                email: user.email,
+                profile_picture: user.profile_picture,
+                token: generateToken(user._id),
+            }
+
+            res.status(200).json(tutorData);
+        }
+
+        res.end()
+    }
+)
+
+
 /**
  * @description This method is used to get all the tutors from Database.
  * @route GET api/tutors
@@ -62,5 +89,6 @@ const getTutor = asyncHandler( async(req, res) => {
 module.exports = {
     getTutors,
     getTutor,
-    getTutorsByCategory
+    getTutorsByCategory,
+    loginTutor
 }

@@ -250,7 +250,7 @@ const changePassword = asyncHandler( async(req, res) => {
 })
 
 const editPayInfo = asyncHandler(
-  async (req, res) => {
+	async (req, res) => {
 		const update = req.body.update
 		console.log(update)
 		if (update) {
@@ -272,13 +272,13 @@ const editPayInfo = asyncHandler(
 )
 
 module.exports = {
-  editPayInfo,
-  loginUser,
-  registerUser,
-  editUser,
-  getMe,
-  addToMyTutors,
-  getMyTutors,
-  deleteFromMyTutors,
-  changePassword
+	editPayInfo,
+	loginUser,
+	registerUser,
+	editUser,
+	getMe,
+	addToMyTutors,
+	getMyTutors,
+	deleteFromMyTutors,
+	changePassword
 };
