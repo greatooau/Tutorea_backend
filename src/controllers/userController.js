@@ -67,7 +67,7 @@ const registerUser = asyncHandler(async (req, res) => {
         _id: user.id,
         name: user.name,
         email: user.email,
-        token: generateToken(user._id),
+        token: generateToken(user._id, 'user'),
       });
     } else {
       res.status(400);
@@ -136,13 +136,8 @@ const loginUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ username: username });
     if (user && (await bcrypt.compare(password, user.password))) {
       res.status(200).json({
-        _id: user.id,
-        name: user.name,
-        lastname: user.lastname,
-        sex: user.sex,
-        email: user.email,
-        profile_picture: user.profile_picture,
-        token: generateToken(user._id),
+        token: generateToken(user._id, 'user'),
+		role:'user'
       });
     } else {
       res.status(400);
@@ -221,8 +216,8 @@ const deleteFromMyTutors = asyncHandler(async (req, res) => {
     res.end()
 });
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+const generateToken = (id, role) => {
+  return jwt.sign({ id, role}, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
 const changePassword = asyncHandler( async(req, res) => {

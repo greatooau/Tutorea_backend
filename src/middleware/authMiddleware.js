@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
+const Tutor = require('../models/tutorModel')
 
 const protect = asyncHandler( async (req, res, next) => {
     let token;
@@ -13,8 +14,18 @@ const protect = asyncHandler( async (req, res, next) => {
             //Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            //Get user from token
-            req.user = await User.findById(decoded.id).select('-password');
+            switch(decoded.role) {
+                case 'user':
+                    //Get user from token
+                    req.user = await User.findById(decoded.id).select('-password');
+                    break;
+                case 'tutor':
+                    req.tutor = await Tutor.findById(decoded.id).select('-password');
+                    break;
+                default:
+                    throw 'NO AUTORIZADO'
+            }
+            //CALAR
 
             next();
         } catch(e) {
