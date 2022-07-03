@@ -18,9 +18,11 @@ const protect = asyncHandler( async (req, res, next) => {
                 case 'user':
                     //Get user from token
                     req.user = await User.findById(decoded.id).select('-password');
+                    //req.user.role = decoded.role
                     break;
                 case 'tutor':
                     req.tutor = await Tutor.findById(decoded.id).select('-password');
+                    //req.tutor.role = decoded.role
                     break;
                 default:
                     throw 'NO AUTORIZADO'

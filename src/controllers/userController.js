@@ -25,20 +25,21 @@ const registerUser = asyncHandler(async (req, res) => {
       phone,
     } = req.body;
 
-    if (
+    /* if (
       !name ||
       !email ||
       !password ||
       !username ||
       !lastname ||
       !born_date /* || 
-          !profile_picture */ ||
+          !profile_picture  ||
       !sex ||
       !phone
     ) {
       res.status(400);
       throw new Error("Please add all fields");
     }
+    */
 
     const userExists = await User.findOne({ email, username });
 
@@ -217,7 +218,7 @@ const deleteFromMyTutors = asyncHandler(async (req, res) => {
 });
 
 const generateToken = (id, role) => {
-  return jwt.sign({ id, role}, process.env.JWT_SECRET, { expiresIn: "30d" });
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
 const changePassword = asyncHandler( async(req, res) => {

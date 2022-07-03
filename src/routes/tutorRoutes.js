@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getTutors, getTutor, getTutorsByCategory, loginTutor } = require('../controllers/tutorController');
+const { getTutors, getTutor, getTutorsByCategory, loginTutor, getMyStudents } = require('../controllers/tutorController');
 const { protect } = require('../middleware/authMiddleware')
 
 router.route('/')
@@ -16,5 +16,8 @@ router.route('/:id')
 router.route('/category/:category')
     .get(protect, getTutorsByCategory)
 
+
+router.route('/myStudents')
+    .get(protect, getMyStudents)
 
 module.exports = router;

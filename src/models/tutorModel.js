@@ -58,10 +58,21 @@ const tutorSchema = mongoose.Schema(
             type:Number,
             required:true
         },
-        //Mis alumnos
-        my_students:[
-            { type:mongoose.Schema.Types.ObjectId, required: true, ref:'User' }
-        ],
+        //Estatus
+        status: {
+            type: String,
+            required:true
+        },
+        //Sexo
+        sex: {
+            type: String,
+            required:true
+        },
+        //Cuenta bancaria
+        bank_account: {
+            type:Number,
+            required:true
+        },
         //Estudios
         studies:[studySchema],
         //Conocimientos
