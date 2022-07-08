@@ -5,6 +5,7 @@ const Insights = require('../models/insightsModel');
 const Contacts = require('../models/contactsModel');
 const Studies = require('../models/studiesModel');
 const Transactions = require('../models/transactionModel')
+const jwt = require("jsonwebtoken");
 
 
 /**
@@ -20,7 +21,7 @@ const loginTutor = asyncHandler (
         const tutor = await Tutor.findOne({ username: username });
         //Si el tutor existe, y su contraseña es la correcta, entonces...
         if (tutor && (await bcrypt.compare(password, tutor.password))) {
-            res.status(200).json({token: generateToken(tutor._id), role: 'tutor'});
+            res.status(200).json({token: generateToken(tutor._id, 'tutor'), role: 'tutor'});
         }
         else {
             res.status(400);
@@ -49,26 +50,26 @@ const loginTutor = asyncHandler (
       email,//email
     } = req.body;
 
-    /* if (
-      !username ||//username
-      !password ||//password
-      !name ||//name
-      !lastname ||//lastname
-      !fee ||
-      !category ||//category
-      !specialization ||//specialization
-      !email//email
+    if (
+        !username ||//username
+        !password ||//password
+        !name ||//name
+        !lastname ||//lastname
+        !fee ||
+        !category ||//category
+        !specialization ||//specialization
+        !email//email
     ) {
-      res.status(400);
-      throw new Error("Please add all fields");
+        res.status(400);
+        throw new Error("Please add all fields");
     }
-    */
+    
 
     const tutorExists = await Tutor.findOne({ email, username });
 
     if (tutorExists) {
-      res.status(400);
-      throw new Error("User already exists");
+        res.status(400);
+        throw new Error("User already exists");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -83,7 +84,7 @@ const loginTutor = asyncHandler (
         category,//category
         specialization,//specialization
         email,//email
-        phone:"",
+        phone:"", // NO se si incluirlo, no creo
         fee,
         sex:"",
         bank_account:"",
@@ -110,6 +111,33 @@ const loginTutor = asyncHandler (
     res.end();
 });
 
+
+const changePassword = asyncHandler( 
+    async(req, res) => {
+        const oldPassword = req.body.oldPassword
+        const newPassword = req.body.newPassword
+        const user = await Tutor.findById(req.tutor._id)
+        const flag = await bcrypt.compare(oldPassword, user.password)
+
+        if(!user && !flag) {
+            res.status(400)
+            res.end()//por si acaso pa
+            throw new Error('Password incorrect')
+        }
+        
+        const salt = await bcrypt.genSalt(10);
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+        console.log(hashedNewPassword)
+        await Tutor.updateOne(
+        { _id: req.tutor.id },
+        { $set: { password: hashedNewPassword } }
+        )
+        
+        res.status(200)
+        res.json({message: 'Exito al cambiar la contraseña'})
+        res.end()
+    }
+)
 //METODO PARA OBTENER LOS ESTUDIANTES DEL TUTOR
 /**
  * @description This method is used to get all the tutor's students.
@@ -118,10 +146,11 @@ const loginTutor = asyncHandler (
  */
 const getMyStudents = asyncHandler (
     async (req, res) => {
-        req.tutor._id = "626750fa1889a7f90071d3de" // para probar
-
-        const transactions = await Transactions.find({ tutor: req.tutor._id }).populate("tutor");
-        
+        id = "6265b3495bce7cc5b6b7d341" // para probar
+        //TODO: Hacer que se tenga la propiedad "active" para el schema de transactions
+        const transactions = await Transactions.find({
+            $and: [{ tutor: id }, { activo: 1 }],
+        }).populate("user");        
         //Variable auxiliar
         const students = []
 
@@ -135,10 +164,6 @@ const getMyStudents = asyncHandler (
             )
         });
         
-        //Eliminar el campo contraseña del objeto student
-        students.forEach(user => {
-            delete user.student.password
-        });
 
         //Enviar 
         res.json(students);
@@ -154,8 +179,40 @@ const generateToken = (id, role) => {
 
 const getMe = asyncHandler(
     async(req, res) => {
+        const {
+            _id,
+            name,
+            email,
+            profile_picture,
+            lastname,
+            username,
+            specialization,
+            fee,
+            category,
+            sex,
+            born_date,
+            phone,
+            bank_account,
+            status
+        } = await Tutor.findById(req.tutor._id);
         
-        
+        const response = {
+            id:_id,
+            name,
+            email,
+            profile_picture,
+            lastname,
+            username,
+            specialization,
+            fee,
+            category,
+            sex,
+            born_date,
+            phone,
+            bank_account,
+            status
+        }
+        res.status(200).json(response)
 
         res.end()
     }
@@ -222,5 +279,8 @@ module.exports = {
     getTutor,
     getMyStudents,
     getTutorsByCategory,
-    loginTutor
+    loginTutor,
+    getMe,
+    changePassword,
+    preregister
 }

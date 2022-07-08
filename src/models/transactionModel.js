@@ -19,6 +19,10 @@ const transactionSchema = mongoose.Schema(
             type: String,
             required:true
         },
+        activo:{
+            type: Number,
+            required:true
+        }
 
 
     },
