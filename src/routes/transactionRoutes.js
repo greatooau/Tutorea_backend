@@ -3,6 +3,7 @@ const router = express.Router();
 const { protect } = require('../middleware/authMiddleware')
 const Transactions = require('../models/transactionModel')
 const asyncHandler = require("express-async-handler");
+const { route } = require('./tutorRoutes');
 
 router.route('/')
     .post(protect, asyncHandler(async (req, res) => {
@@ -12,4 +13,13 @@ router.route('/')
         res.status(200)
         res.end()
     }))
+
+    //TODO: IMPLEMENTARLO CUANDO SE LE PIQUE A TERMINAR TUTORIA
+router.route('/inactive')
+    .post(protect, asyncHandler(
+        async (req, res) => {
+            await Transactions.updateOne({$and: [{ user: req.user._id }, { tutor: req.body.tutorId}, { activo: 1 }]},
+                { activo:0 })
+        }
+    ))
 module.exports = router

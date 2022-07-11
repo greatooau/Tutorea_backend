@@ -4,7 +4,7 @@ const studySchema = new mongoose.Schema({ study:String, school:String, img: Stri
 
 const insightSchema = new mongoose.Schema({ name: String })
 
-const contactSchema = new mongoose.Schema({ name:String, contact:String })
+const contactSchema = new mongoose.Schema({ type:String, contact:String })
 
 const tutorSchema = mongoose.Schema(
     {
@@ -50,8 +50,7 @@ const tutorSchema = mongoose.Schema(
         },
         //Estrellas
         stars: {
-            type: Number,
-            required: true
+            type: Number
         },
         //Cuota
         fee: {
@@ -65,13 +64,11 @@ const tutorSchema = mongoose.Schema(
         },
         //Sexo
         sex: {
-            type: String,
-            required:true
+            type: String
         },
         //Cuenta bancaria
         bank_account: {
-            type:Number,
-            required:true
+            type:String
         },
         //Estudios
         studies:[studySchema],

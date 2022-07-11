@@ -90,6 +90,7 @@ const preregister = asyncHandler(async (req, res) => {
         studies: [],
         insights: [],
         contacts: [],
+        stars:0,
         status: "PENDIENTE", //ACTIVO, RECHAZADO
         profile_picture:
             "https://imgs.search.brave.com/BBWmpwlbk30sxtRiwzETZbbQ9qNDoeUAIpLNqBhzPmo/rs:fit:1200:1200:1/g:ce/aHR0cDovL3N0YXRp/Yy5ndWltLmNvLnVr/L3N5cy1pbWFnZXMv/R3VhcmRpYW4vUGl4/L3BpY3R1cmVzLzIw/MTUvNi85LzE0MzM4/NjA4ODg1MDMvQWxi/ZXJ0LUVpbnN0ZWlu/Li0tMDA5LmpwZw",
@@ -163,23 +164,48 @@ const addInsights = asyncHandler(async (req, res) => {
     res.status(200).end();
 });
 
+const editProfile = asyncHandler(
+    async(req, res) => {
+    const tutor = await Tutor.findById(req.params.id);
+
+	if (!tutor) {
+		res.status(400);
+		throw new Error("Tutor not found");
+	}
+
+	const updatedTutor = await Tutor.findByIdAndUpdate(req.params.id, req.body);
+
+	res.status(200).json(updatedTutor);
+	
+	res.end();
+    }
+)
+
 const changePassword = asyncHandler(async (req, res) => {
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
     const user = await Tutor.findById(req.tutor._id);
     const flag = await bcrypt.compare(oldPassword, user.password);
 
-    if (!user && !flag) {
+    if (!user || !flag) {
+        res.status(400);
+        throw new Error("Password incorrect");
+        
+         //por si acaso pa
+        
+    }
+    if (newPassword === ''){
+        throw new Error("You need to provide a password");
         res.status(400);
         res.end(); //por si acaso pa
-        throw new Error("Password incorrect");
+        
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedNewPassword = await bcrypt.hash(newPassword, salt);
     console.log(hashedNewPassword);
     await Tutor.updateOne(
-        { _id: req.tutor.id },
+        { _id: req.tutor._id },
         { $set: { password: hashedNewPassword } }
     );
 
@@ -193,11 +219,10 @@ const changePassword = asyncHandler(async (req, res) => {
  * @route GET api/tutors/students
  * @access Private
  */
-const getMyStudents = asyncHandler(async (req, res) => {
-    id = "6265b3495bce7cc5b6b7d341"; // para probar
+const getMyStudents = asyncHandler(async (req, res) => {// para probar
     //TODO: Hacer que se tenga la propiedad "active" para el schema de transactions
     const transactions = await Transactions.find({
-        $and: [{ tutor: id }, { activo: 1 }],
+        $and: [{ tutor: req.tutor._id }, { activo: 1 }],
     }).populate("user");
     //Variable auxiliar
     const students = [];
@@ -237,6 +262,10 @@ const getMe = asyncHandler(async (req, res) => {
         phone,
         bank_account,
         status,
+        studies,
+        contacts,
+        insights
+
     } = await Tutor.findById(req.tutor._id);
 
     const response = {
@@ -254,6 +283,9 @@ const getMe = asyncHandler(async (req, res) => {
         phone,
         bank_account,
         status,
+        contacts, 
+        studies,
+        insights
     };
     res.status(200).json(response);
 
@@ -267,7 +299,8 @@ const getMe = asyncHandler(async (req, res) => {
  */
 
 const getTutors = asyncHandler(async (req, res) => {
-    const tutors = await Tutor.find();
+    
+    const tutors = await Tutor.find({status:req.query.status});
     /*     const insights = await Insights.find();
     const studies = await Studies.find();
     const contacts = await Contacts.find(); */
@@ -285,7 +318,7 @@ const getTutors = asyncHandler(async (req, res) => {
  */
 
 const getTutorsByCategory = asyncHandler(async (req, res) => {
-    const tutors = await Tutor.find({ category: req.params.category });
+    const tutors = await Tutor.find({ category: req.params.category, status: req.query.status });
     /*     const insights = await Insights.find();
     const studies = await Studies.find();
     const contacts = await Contacts.find(); */
@@ -326,5 +359,6 @@ module.exports = {
     preregister,
     addInsights,
     addContacts,
-    addStudies
+    addStudies,
+    editProfile
 };

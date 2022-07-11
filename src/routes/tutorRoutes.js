@@ -12,6 +12,7 @@ const {
     addInsights,
     addStudies,
     addContacts,
+    editProfile
 } = require("../controllers/tutorController");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -19,19 +20,22 @@ router.route("/").get(protect, getTutors);
 
 router.route("/me").get(protect, getMe);
 
-router.route("/students").get(protect, getMyStudents);
+router.route("/:id")
+    .put(protect, editProfile)
 
+router.route("/students").get(protect, getMyStudents);
+//TODO: FALTA HACER UN ENDPOINT PARA EDITAR LA INFO DEL TUTOR
 //Login del tutor
 router.route("/login").post(loginTutor);
-//TODO: Calar este endpoint
+//TODO: Calar este endpoint YA FUNCIONA PA
 router.route("/password").post(protect, changePassword);
-//TODO: Calar este endpoint
-router.route("/pre-register").post(preregister);
-//TODO: Calar este endpoint
+//TODO: Calar este endpoint YA FUNCIONA PA
+router.route("/").post(preregister);
+//TODO: Calar este endpoint YA FUNCIONA PA
 router.route("/insights").post(protect, addInsights);
-//TODO: Calar este endpoint
+//TODO: Calar este endpoint YA FUNCIONA PA
 router.route("/contacts").post(protect, addContacts);
-//TODO: Calar este endpoint
+//TODO: Calar este endpoint YA FUNCIONA PA
 router.route("/studies").post(protect, addStudies);
 
 router.route("/:id").get(protect, getTutor);
