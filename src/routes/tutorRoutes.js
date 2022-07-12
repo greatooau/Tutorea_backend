@@ -16,7 +16,7 @@ const {
 } = require("../controllers/tutorController");
 const { protect } = require("../middleware/authMiddleware");
 
-router.route("/").get(protect, getTutors);
+router.route("/").get( getTutors);
 
 router.route("/me").get(protect, getMe);
 

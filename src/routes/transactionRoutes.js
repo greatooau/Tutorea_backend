@@ -18,8 +18,17 @@ router.route('/')
 router.route('/inactive')
     .post(protect, asyncHandler(
         async (req, res) => {
-            await Transactions.updateOne({$and: [{ user: req.user._id }, { tutor: req.body.tutorId}, { activo: 1 }]},
-                { activo:0 })
+            try{
+                await Transactions.updateOne({$and: [{ user: req.user._id }, { tutor: req.body.tutorId}, { activo: 1 }]},
+                    { activo:0 })
+                res.status(200).json('The transaction has been succesfully updated');
+                res.end();
+            }catch(e){
+                res.status(500).json('The operation has failed.');
+                res.end();
+            }
+            
+            
         }
     ))
 module.exports = router
