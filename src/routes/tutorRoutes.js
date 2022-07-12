@@ -21,7 +21,7 @@ router.route("/").get( getTutors);
 router.route("/me").get(protect, getMe);
 
 router.route("/:id")
-    .put(protect, editProfile)
+    .put(editProfile)
 
 router.route("/students").get(protect, getMyStudents);
 //TODO: FALTA HACER UN ENDPOINT PARA EDITAR LA INFO DEL TUTOR
