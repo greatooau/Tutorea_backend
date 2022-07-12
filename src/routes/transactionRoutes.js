@@ -19,7 +19,12 @@ router.route('/inactive')
     .post(protect, asyncHandler(
         async (req, res) => {
             try{
-                await Transactions.updateOne({$and: [{ user: req.user._id }, { tutor: req.body.tutorId}, { activo: 1 }]},
+                console.log(req.user._id)
+                console.log(req.body.tutorId)
+                if(!req.user.id || !req.body.tutorId) {
+                    throw new Error("Debe incluir ambos ID de tutor y alumno para inactivar la transacción.")
+                }
+                await Transactions.updateOne({$and: [{ user: req.user._id }, { tutor: req.body.tutorId }, { activo: 1 }]},
                     { activo:0 })
                 res.status(200).json('The transaction has been succesfully updated');
                 res.end();
