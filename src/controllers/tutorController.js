@@ -1,9 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const Tutor = require("../models/tutorModel");
-const Insights = require("../models/insightsModel");
-const Contacts = require("../models/contactsModel");
-const Studies = require("../models/studiesModel");
+const Sessions = require("../models/sessionsModel")
 const Transactions = require("../models/transactionModel");
 const jwt = require("jsonwebtoken");
 
@@ -348,7 +346,41 @@ const getTutor = asyncHandler(async (req, res) => {
     res.end();
 });
 
+const getSessions = asyncHandler( async (req, res) => {
+    console.log(2)
+
+    const date = new Date();
+
+    let day = date.getDay();
+    let month = date.getMonth();
+    let year = date.getFullYear();
+
+    let from = date;
+    let to = new Date(year, month, day + 1)
+
+    const sessions = await Sessions.find({ tutor: req.params.tutorId }).gt('createdAt', from).lt('createdAt', to)
+    
+
+    
+    res.status(200).json(sessions).end()
+});
+
+const addSessions = asyncHandler( async (req, res) => {
+    
+    const { tutor, code } = req.body
+    console.log(req.body)
+    console.log(code)
+    await Sessions.create(
+        {
+            code,
+            tutor
+        });
+
+    res.status(200).end();
+});
 module.exports = {
+    addSessions,
+    getTutorSessions: getSessions,
     getTutors,
     getTutor,
     getMyStudents,

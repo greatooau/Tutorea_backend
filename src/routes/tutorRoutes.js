@@ -12,7 +12,9 @@ const {
     addInsights,
     addStudies,
     addContacts,
-    editProfile
+    editProfile,
+    getTutorSessions,
+    addSessions
 } = require("../controllers/tutorController");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -22,6 +24,9 @@ router.route("/me").get(protect, getMe);
 
 router.route("/:id")
     .put(editProfile)
+
+router.route("/sessions").post(addSessions)
+router.route("/:tutorId/sessions").get(getTutorSessions)
 
 router.route("/students").get(protect, getMyStudents);
 //TODO: FALTA HACER UN ENDPOINT PARA EDITAR LA INFO DEL TUTOR
