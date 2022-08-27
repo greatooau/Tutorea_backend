@@ -201,7 +201,7 @@ const changePassword = asyncHandler(async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedNewPassword = await bcrypt.hash(newPassword, salt);
-    console.log(hashedNewPassword);
+
     await Tutor.updateOne(
         { _id: req.tutor._id },
         { $set: { password: hashedNewPassword } }
@@ -347,15 +347,15 @@ const getTutor = asyncHandler(async (req, res) => {
 });
 
 const getSessions = asyncHandler( async (req, res) => {
-    console.log(2)
+
 
     const date = new Date();
 
-    let day = date.getDay();
+    let day = date.getDate();
     let month = date.getMonth();
     let year = date.getFullYear();
 
-    let from = date;
+    let from = new Date(year, month, day);
     let to = new Date(year, month, day + 1)
 
     const sessions = await Sessions.find({ tutor: req.params.tutorId }).gt('createdAt', from).lt('createdAt', to)
@@ -368,8 +368,7 @@ const getSessions = asyncHandler( async (req, res) => {
 const addSessions = asyncHandler( async (req, res) => {
     
     const { tutor, code } = req.body
-    console.log(req.body)
-    console.log(code)
+    
     await Sessions.create(
         {
             code,
