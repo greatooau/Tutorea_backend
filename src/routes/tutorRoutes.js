@@ -25,7 +25,7 @@ router.route("/me").get(protect, getMe);
 router.route("/:id")
     .put(editProfile)
 
-router.route("/sessions").post(addSessions)
+router.route("/sessions").post(protect,addSessions)
 router.route("/:tutorId/sessions").get(getTutorSessions)
 
 router.route("/students").get(protect, getMyStudents);

@@ -4,7 +4,8 @@ const Tutor = require("../models/tutorModel");
 const Sessions = require("../models/sessionsModel")
 const Transactions = require("../models/transactionModel");
 const jwt = require("jsonwebtoken");
-
+const nodemailer = require('nodemailer');
+const User = require("../models/userModel")
 /**
  * @description This method is used to login as a tutor.
  * @route GET api/tutors/login
@@ -348,7 +349,6 @@ const getTutor = asyncHandler(async (req, res) => {
 
 const getSessions = asyncHandler( async (req, res) => {
 
-
     const date = new Date();
 
     let day = date.getDate();
@@ -366,16 +366,66 @@ const getSessions = asyncHandler( async (req, res) => {
 });
 
 const addSessions = asyncHandler( async (req, res) => {
-    
+
     const { tutor, code } = req.body
     
-    await Sessions.create(
-        {
-            code,
-            tutor
+    const date = new Date();
+
+    let day = date.getDate() + 1;
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    let to = `${day}/${month}/${year}`
+
+    const { hours } = require("../resources/hours")
+    const user = await User.findById(req.user._id)
+    const tutorObj = await Tutor.findById(tutor)
+
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: "pajaroazulx@gmail.com",
+          pass: "asrtzkewhzozmoql",
+        },
+      });
+
+    const [{ name }] = hours.filter(hr => hr.value === code );
+    try {
+        let info = await transporter.sendMail({
+            from: `"Tutorea" <pajaroazulx@gmail.com>`,
+            to: `${user.email}`, // list of receivers
+            subject: `Nueva sesión agendada de ${ name }`, // Subject line
+            html: `<p>Una nueva sesión se ha agendado con el tutor ${tutorObj.name} ${tutorObj.lastname}, para el día ${to}</p>
+                    <br/>
+                    <p>El correo para poder contactarse con él es: ${tutorObj.email}</p>`, // html body
         });
 
-    res.status(200).end();
+        let info2 = await transporter.sendMail({
+            from: `"Tutorea" <pajaroazulx@gmail.com>`,
+            to: `${tutorObj.email}`, // list of receivers
+            subject: `Nueva sesión agendada de ${ name }`, // Subject line
+            html: `<p>Una nueva sesión se ha agendado con el estudiante ${user.name} ${user.lastname}, para el día ${to}</p>
+                    <br/>
+                    <p>El correo para poder contactarse con él es: ${user.email}</p>`, // html body
+        });
+
+
+        
+        
+        await Sessions.create(
+            {
+                code,
+                tutor
+            });
+
+        res.status(200).end();
+    }
+    catch(e) {
+        res.status(500).end()
+    }
 });
 module.exports = {
     addSessions,
