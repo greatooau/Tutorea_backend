@@ -174,16 +174,18 @@ const editUser = asyncHandler(async (req, res) => {
  */
 const addToMyTutors = asyncHandler(async (req, res) => {
     const tutor = await Tutor.findById(req.body.tutorId);
+    
+    const { myTutors } = User.findById(req.user.id)
 
     if (!tutor) {
       res.status(400);
       throw new Error("Tutor not found");
     }
-
-    await User.updateOne(
-      { _id: req.user.id },
-      { $push: { myTutors: req.body.tutorId } }
-    );
+    if(!myTutors.includes(req.body.tutorId))
+      await User.updateOne(
+        { _id: req.user.id },
+        { $push: { myTutors: req.body.tutorId } }
+      );
 
     res.status(200).json(tutor);
     res.end();
