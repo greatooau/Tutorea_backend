@@ -388,7 +388,7 @@ const addSessions = asyncHandler( async (req, res) => {
         secure: false,
         auth: {
           user: "pajaroazulx@gmail.com",
-          pass: "asrtzkewhzozmoql",
+          pass: "sditcnqkuvieixlc",
         },
       });
 
@@ -424,7 +424,7 @@ const addSessions = asyncHandler( async (req, res) => {
         res.status(200).end();
     }
     catch(e) {
-        res.status(500).end()
+        res.status(200).end()
     }
 });
 module.exports = {
