@@ -381,51 +381,13 @@ const addSessions = asyncHandler( async (req, res) => {
     const user = await User.findById(req.user._id)
     const tutorObj = await Tutor.findById(tutor)
 
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: "pajaroazulx@gmail.com",
-          pass: "sditcnqkuvieixlc",//sditcnqkuvieixlc
-        },
-      });
 
-    const [{ name }] = hours.filter(hr => hr.value === code );
-    try {
-        let info = await transporter.sendMail({
-            from: `"Tutorea" <pajaroazulx@gmail.com>`,
-            to: `${user.email}`, // list of receivers
-            subject: `Nueva sesión agendada de ${ name }`, // Subject line
-            html: `<p>Una nueva sesión se ha agendado con el tutor ${tutorObj.name} ${tutorObj.lastname}, para el día ${to}</p>
-                    <br/>
-                    <p>El correo para poder contactarse con él es: ${tutorObj.email}</p>`, // html body
+    await Sessions.create(
+        {
+            code,
+            tutor
         });
-
-        let info2 = await transporter.sendMail({
-            from: `"Tutorea" <pajaroazulx@gmail.com>`,
-            to: `${tutorObj.email}`, // list of receivers
-            subject: `Nueva sesión agendada de ${ name }`, // Subject line
-            html: `<p>Una nueva sesión se ha agendado con el estudiante ${user.name} ${user.lastname}, para el día ${to}</p>
-                    <br/>
-                    <p>El correo para poder contactarse con él es: ${user.email}</p>`, // html body
-        });
-
-
-        
-        
-        await Sessions.create(
-            {
-                code,
-                tutor
-            });
-
-        res.status(200).end();
-    }
-    catch(e) {
-        res.status(200).end()
-    }
+    res.status(200).end()
 });
 module.exports = {
     addSessions,
