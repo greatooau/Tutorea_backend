@@ -368,20 +368,6 @@ const getSessions = asyncHandler( async (req, res) => {
 const addSessions = asyncHandler( async (req, res) => {
 
     const { tutor, code } = req.body
-    
-    const date = new Date();
-
-    let day = date.getDate() + 1;
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-
-    let to = `${day}/${month}/${year}`
-
-    const { hours } = require("../resources/hours")
-    const user = await User.findById(req.user._id)
-    const tutorObj = await Tutor.findById(tutor)
-
-
     await Sessions.create(
         {
             code,
