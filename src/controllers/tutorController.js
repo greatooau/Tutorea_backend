@@ -388,7 +388,7 @@ const addSessions = asyncHandler( async (req, res) => {
         secure: false,
         auth: {
           user: "pajaroazulx@gmail.com",
-          pass: "asrtzkewhzozmoql",
+          pass: "sditcnqkuvieixlc",
         },
       });
 
