@@ -175,7 +175,7 @@ const editUser = asyncHandler(async (req, res) => {
 const addToMyTutors = asyncHandler(async (req, res) => {
     const tutor = await Tutor.findById(req.body.tutorId);
     
-    const { myTutors } = User.findById(req.user.id)
+    const { myTutors } = await User.findById(req.user._id)
 
     if (!tutor) {
       res.status(400);

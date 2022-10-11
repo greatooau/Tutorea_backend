@@ -7,11 +7,21 @@ const { route } = require('./tutorRoutes');
 
 router.route('/')
     .post(protect, asyncHandler(async (req, res) => {
-        
-        await Transactions.create(req.body)
-        res.json({...req.body})
-        res.status(200)
-        res.end()
+        try
+        {
+            await Transactions.create(req.body)
+            res
+            .json({...req.body})
+            .status(200)
+            .end();
+        }
+        catch(e)
+        {
+            res
+            .json({message:"Cannot add new transaction."})
+            .status(500)
+            .end();
+        }
     }))
 
     //TODO: IMPLEMENTARLO CUANDO SE LE PIQUE A TERMINAR TUTORIA

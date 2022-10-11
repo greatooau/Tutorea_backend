@@ -222,7 +222,7 @@ const getMyStudents = asyncHandler(async (req, res) => {// para probar
     //TODO: Hacer que se tenga la propiedad "active" para el schema de transactions
     const transactions = await Transactions.find({
         $and: [{ tutor: req.tutor._id }, { activo: 1 }],
-    }).populate("user");
+    }).populate("user").populate("session");
     //Variable auxiliar
     const students = [];
 
@@ -231,6 +231,7 @@ const getMyStudents = asyncHandler(async (req, res) => {// para probar
             id: transaction._id, //id
             student: transaction.user, //usuario completo
             sesions: transaction.sesions, //numero de sesiones
+            session: transaction.session
         });
     });
 
@@ -365,78 +366,41 @@ const getSessions = asyncHandler( async (req, res) => {
     res.status(200).json(sessions).end()
 });
 
-const addSessions = asyncHandler( async (req, res) => {
+const addSessions = asyncHandler( 
+    async (req, res) => 
+    {
+        const date = new Date();
 
-    const { tutor, code } = req.body
-<<<<<<< HEAD
-    
-    const date = new Date();
+        let day = date.getDate() + 1;
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
 
-    let day = date.getDate() + 1;
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
+        const { tutor, code } = req.body
+        const hours = require("../hours.json");
 
-    let to = `${day}/${month}/${year}`
+        const { name } = hours.find( hour => hour.value === code);
 
-    const { hours } = require("../resources/hours")
-    const user = await User.findById(req.user._id)
-    const tutorObj = await Tutor.findById(tutor)
-
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: "pajaroazulx@gmail.com",
-          pass: "sditcnqkuvieixlc",
-        },
-      });
-
-    const [{ name }] = hours.filter(hr => hr.value === code );
-    try {
-        let info = await transporter.sendMail({
-            from: `"Tutorea" <pajaroazulx@gmail.com>`,
-            to: `${user.email}`, // list of receivers
-            subject: `Nueva sesión agendada de ${ name }`, // Subject line
-            html: `<p>Una nueva sesión se ha agendado con el tutor ${tutorObj.name} ${tutorObj.lastname}, para el día ${to}</p>
-                    <br/>
-                    <p>El correo para poder contactarse con él es: ${tutorObj.email}</p>`, // html body
-        });
-
-        let info2 = await transporter.sendMail({
-            from: `"Tutorea" <pajaroazulx@gmail.com>`,
-            to: `${tutorObj.email}`, // list of receivers
-            subject: `Nueva sesión agendada de ${ name }`, // Subject line
-            html: `<p>Una nueva sesión se ha agendado con el estudiante ${user.name} ${user.lastname}, para el día ${to}</p>
-                    <br/>
-                    <p>El correo para poder contactarse con él es: ${user.email}</p>`, // html body
-        });
-
-
-        
-        
-        await Sessions.create(
-            {
-                code,
-                tutor
-            });
-
-        res.status(200).end();
-    }
-    catch(e) {
-        res.status(200).end()
-    }
-=======
-    await Sessions.create(
+        try
         {
-            code,
-            tutor
-        });
-    res.status(200).end()
->>>>>>> d60ab2a71c20f663e605c877a3a21f668daa505a
-});
-module.exports = {
+            const session = await Sessions.create(
+                            {
+                                code,
+                                tutor,
+                                schedule: `${day}/${month}/${year}##${name}`
+                            });
+            if (session)
+                res.status(200).json({ session_id:session._id }).end()
+            else
+                res.status(500).json({ message: "New session couldn't be created. Function: " +  addSessions.name }).end()
+        }
+        catch(e) 
+        {
+            throw new Error("Object couldn't be created. This happened in " + addSessions.name + " func.")
+        }
+    }
+);
+module.exports = 
+{
     addSessions,
     getTutorSessions: getSessions,
     getTutors,

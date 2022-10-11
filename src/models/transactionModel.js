@@ -22,6 +22,11 @@ const transactionSchema = mongoose.Schema(
         activo:{
             type: Number,
             required:true
+        },
+        session: { 
+            type: mongoose.Types.ObjectId,
+            required:false,
+            ref:'Sessions'
         }
 
 

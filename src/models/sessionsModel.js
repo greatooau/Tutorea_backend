@@ -10,7 +10,12 @@ const sessionSchema = mongoose.Schema(
             type: mongoose.Types.ObjectId,
             required:true,
             ref:'Tutor'
+        },
+        schedule: {
+            type: String,
+            required:true
         }
+
     },
     {
         timestamps: true
