@@ -368,6 +368,7 @@ const getSessions = asyncHandler( async (req, res) => {
 const addSessions = asyncHandler( async (req, res) => {
 
     const { tutor, code } = req.body
+<<<<<<< HEAD
     
     const date = new Date();
 
@@ -426,6 +427,14 @@ const addSessions = asyncHandler( async (req, res) => {
     catch(e) {
         res.status(200).end()
     }
+=======
+    await Sessions.create(
+        {
+            code,
+            tutor
+        });
+    res.status(200).end()
+>>>>>>> d60ab2a71c20f663e605c877a3a21f668daa505a
 });
 module.exports = {
     addSessions,
